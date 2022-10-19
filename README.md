@@ -66,8 +66,10 @@ Restaurants
 - Authentication is hardcoded but in the future we could support google authentication, MSAL or Duende Identity Server.
 - A UI - either a web app (angular/react) or a mobile app.
 
+## Notes
+If you do not provide a location (latitude/longitude) a default loaction in Copenhagen is chosen.
 
-
+The data seeding adds 13 restaurants in Copenhagen, 1 in Hillerød and 2 in Billund
 
 
 
