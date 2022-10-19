@@ -9,6 +9,12 @@
 # Burger Backend 1.0
 The new Burger Backend 1.0 will soon serve websites and apps.
 
+## Installation
+1. pull the code
+2. Open the solution (via .sln file)
+3. In the Package Manager Console select Database project and run "database-update" command
+4. Run and debug API
+
 ## Endpoints
 Authenticate
 
@@ -57,7 +63,7 @@ Restaurants
 - You cannot upload a picture of your burger :(
 - There's no usefull logging to e.g. application insights, file or serilog/elasticsearch.
 - Authentication is hardcoded but in the future we could support google authentication, MSAL or Duende Identity Server.
-- A UI either a web app (angular/react) or a mobile app.
+- A UI - either a web app (angular/react) or a mobile app.
 
 
 
