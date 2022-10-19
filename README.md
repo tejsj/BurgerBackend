@@ -10,6 +10,7 @@
 The new Burger Backend 1.0 will soon serve websites and apps.
 
 ## Installation
+Make sure you have SQL Express 2019 installed or change the connectionstring in appsettings.json
 1. pull the code
 2. Open the solution (via .sln file)
 3. In the Package Manager Console select Database project and run "database-update" command
