@@ -17,11 +17,13 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<BurgerBackendDbContext>(options =>
 {
-    options.UseSqlServer("DefaultConnection", options => options.UseNetTopologySuite());
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), options => options.UseNetTopologySuite());
 });
 
 builder.Services.AddTransient<IRestaurantService, RestaurantService>();
 builder.Services.AddTransient<IAuthenticateService, AuthenticateService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IFileService, FileService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSwaggerGen(option =>
@@ -40,7 +42,7 @@ builder.Services.AddSwaggerGen(option =>
     {
         {
             new OpenApiSecurityScheme
-            {
+            {   
                 Reference = new OpenApiReference
                 {
                     Type=ReferenceType.SecurityScheme,
@@ -79,9 +81,11 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<BurgerBackendDbContext>();
-    dbContext.Database.EnsureCreated();
-    DataSeeder.Seed(dbContext);
+    //var dbInit = scope.ServiceProvider.GetService<IDbInitializer>();
+    //dbInit?.Seed();
+    var dbContext = scope.ServiceProvider.GetService<BurgerBackendDbContext>();
+    if(dbContext != null)
+        DataSeeder.Seed(dbContext);
 }
 
 app.UseAuthentication();

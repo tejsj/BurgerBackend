@@ -10,27 +10,13 @@ namespace API.Controllers
     public class RestaurantsController : ControllerBase
     {
         private readonly IRestaurantService _restaurantService;
-        public RestaurantsController(IRestaurantService restaurantService)
+        public RestaurantsController(
+            IRestaurantService restaurantService)
         {
             _restaurantService = restaurantService;
         }
 
-        [HttpGet("NearbyRestaurants")]
-        [ProducesResponseType(typeof(List<RestaurantDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRestaurantsNearby(double withInMeters, double? latitude, double? longitude)
-        {
-            try
-            {
-                return Ok(await _restaurantService.GetNearbyRestaurants(withInMeters, latitude, longitude));
-            }
-            catch (Exception ex)
-            {
-
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("GetAll")]
+        [HttpGet]
         [ProducesResponseType(typeof(List<RestaurantDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllRestaurants(double? latitude, double? longitude)
         {
@@ -43,9 +29,9 @@ namespace API.Controllers
 
                 return BadRequest(ex.Message);
             }            
-        }
+        }       
 
-        [HttpGet("GetById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(RestaurantDetailsDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRestaurantById(Guid id, double? latitude, double? longitude)
         {
@@ -59,8 +45,25 @@ namespace API.Controllers
             }            
         }
 
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> CreateRestaurant([FromBody] CreateRestaurantDto dto)
+        {
+            try
+            {
+                await _restaurantService.CreateRestaurant(dto);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
+        }
+
         [Authorize]
-        [HttpPost("RateRestaurant")]
+        [HttpPost("Rate")]
         public async Task<IActionResult> RateRestaurant([FromBody] CreateRatingDto dto)
         {
             try
@@ -76,21 +79,19 @@ namespace API.Controllers
             return Ok();
         }
 
-        [Authorize(Roles="admin")]
-        [HttpPost("CreateRestaurant")]
-        public async Task<IActionResult> CreateRestaurant([FromBody] CreateRestaurantDto dto)
+        [HttpGet("Nearby")]
+        [ProducesResponseType(typeof(List<RestaurantDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRestaurantsNearby(double distanceMeters, double? latitude, double? longitude)
         {
             try
             {
-                await _restaurantService.CreateRestaurant(dto);
+                return Ok(await _restaurantService.GetNearbyRestaurants(distanceMeters, latitude, longitude));
             }
             catch (Exception ex)
             {
 
                 return BadRequest(ex.Message);
             }
-
-            return Ok();
         }
     }
 }

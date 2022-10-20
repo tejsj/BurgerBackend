@@ -19,20 +19,16 @@ Make sure you have SQL Express 2019 installed or change the connectionstring in 
 ## Endpoints
 Authenticate
 
-| Endpoint                      | HttpMethod | Description                                    | Requirements |
-|-------------------------------|------------|------------------------------------------------|--------------|
-| /api/Authenticate/login       | POST       | Is used to authenticate user and get JWT token | None         |
-| /api/Authenticate/GetAllUsers | GET        | Get all users in the database                  | None         |
-
-Restaurants
-
-| Endpoint                           | HttpMethod | Description                                         | Requirements               |
-|------------------------------------|------------|-----------------------------------------------------|----------------------------|
-| /api/Restaurants/NearbyRestaurants | GET        | Gets all restaurants with a specied range of meters | None                       |
-| /api/Restaurants/GetAll            | GET        | Gets all restaurants sorted by range                |                            |
-| /api/Restaurants/GetById           | GET        | Get a restaurant details by id                      | None                       |
-| /api/Restaurants/RateRestaurant    | POST       | Rate a restaurant                                   | Authenticated              |
-| /api/Restaurants/CreateRestaurant  | POST       | Create a new restaurant                             | Authenticated + admin role |
+| Api name     | Endpoint                      | HttpMethod | Description                                         | Requirements               |
+|--------------|-------------------------------|------------|-----------------------------------------------------|----------------------------|
+| Authenticate | /api/Authenticate/login       | POST       | Is used to authenticate user and get JWT token      | None                       |
+| Users        | /api/Users                    | GET        | Get all users in the database                       | None                       |
+| File         | /api/Upload                   | POST       | Uploads a file and returns the stored path          | None                       |
+| Restaurants  | /api/Restaurants/Nearby       | GET        | Gets all restaurants with a specied range of meters | None                       |
+| Restaurants  | /api/Restaurants              | GET        | Gets all restaurants sorted by range                | None                       |
+| Restaurants  | /api/Restaurants              | POST       | Create a new restaurant                             | Authenticated + admin role |
+| Restaurants  | /api/Restaurants/{id}         | GET        | Get a restaurant details by id                      | None                       |
+| Restaurants  | /api/Restaurants/Rate         | POST       | Rate a restaurant                                   | Authenticated              |
 
 ## Login flow
 1. Go to api via swagger /swagger/index.html
@@ -52,7 +48,6 @@ Restaurants
 | test2    | 1234     | None  |
 
 ## Infrastructure
-
 - API hosted as an Azure App Service (scale-up, scale-out)
 - Database hosted as an serverless Azure SQL Database
 
@@ -61,7 +56,6 @@ Restaurants
 - Deployment and configuration of code should be done by pipelines to Azure
 
 ## What's missing?
-- You cannot upload a picture of your burger :(
 - There's no usefull logging to e.g. application insights, file or serilog/elasticsearch.
 - Authentication is hardcoded but in the future we could support google authentication, MSAL or Duende Identity Server.
 - A UI - either a web app (angular/react) or a mobile app.

@@ -15,6 +15,6 @@ public class RestaurantDetailsDto
     public string City { get; set; } = null!;
     public int ZipCode { get; set; }
     public string OpeningHours { get; set; } = null!;
-    public double DistanceInMeters { get; set; }
+    public double DistanceMeters { get; set; }
     public IEnumerable<RatingDto> Ratings { get; set; } = new List<RatingDto>();
 }

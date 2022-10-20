@@ -14,7 +14,9 @@ public class AuthenticateService : IAuthenticateService
 {
     private readonly IConfiguration _configuration;
     private readonly BurgerBackendDbContext _context;
-    public AuthenticateService(IConfiguration configuration, BurgerBackendDbContext context)
+    public AuthenticateService(
+        IConfiguration configuration, 
+        BurgerBackendDbContext context)
     {
         _configuration = configuration;
         _context = context;
@@ -51,14 +53,5 @@ public class AuthenticateService : IAuthenticateService
 
         return tokenHandler.WriteToken(token);
 
-    }
-
-    public async Task<List<UserDto>> GetAllUsers()
-    {
-        return await _context.Users.Select(x => new UserDto
-        {
-            Id = x.Id,
-            Name = x.Name
-        }).ToListAsync();
     }
 }

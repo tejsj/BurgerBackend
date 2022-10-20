@@ -38,20 +38,5 @@ namespace API.Controllers
             }
             return Unauthorized();
         }
-
-        [AllowAnonymous]
-        [HttpGet("GetAllUsers")]
-        [ProducesResponseType(typeof(List<UserDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            try
-            {
-                return Ok(await _authenticateService.GetAllUsers());
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);  
-            }
-        }
     }
 }

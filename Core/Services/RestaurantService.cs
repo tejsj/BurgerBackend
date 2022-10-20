@@ -5,7 +5,6 @@ using Database;
 using Microsoft.EntityFrameworkCore;
 using Core.Dtos;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace Core.Services
 {
@@ -31,7 +30,7 @@ namespace Core.Services
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    DistanceInMeters = x.Location.Distance(location)
+                    DistanceMeters = x.Location.Distance(location)
                 })
                 .ToListAsync();
 
@@ -48,7 +47,7 @@ namespace Core.Services
                 .Select(x => new RestaurantDto { 
                     Id = x.Id,
                     Name = x.Name,
-                    DistanceInMeters = x.Location.Distance(location)
+                    DistanceMeters = x.Location.Distance(location)
                 })
                 .ToListAsync();
 
@@ -74,7 +73,7 @@ namespace Core.Services
                     City = x.City,
                     ZipCode = x.ZipCode,
                     OpeningHours = x.OpeningHours,
-                    DistanceInMeters = x.Location.Distance(location),
+                    DistanceMeters = x.Location.Distance(location),
                     Ratings = x.Ratings.Select(y => new RatingDto
                     {
                         TasteRating = y.TasteRating,
@@ -120,12 +119,12 @@ namespace Core.Services
                 RatedAt = DateTime.Now,
                 RatedByUser = user,
                 Restaurant = restaurant,
+                ImagePath = rating.ImagePath
             };
 
             _context.Ratings.Add(newRating);
 
             await _context.SaveChangesAsync();
-
         }
 
         public async Task CreateRestaurant(CreateRestaurantDto restaurant)
