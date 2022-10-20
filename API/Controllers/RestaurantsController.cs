@@ -64,7 +64,7 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost("Rate")]
-        public async Task<IActionResult> RateRestaurant([FromBody] CreateRatingDto dto)
+        public async Task<IActionResult> RateRestaurant([FromForm] CreateRatingDto dto)
         {
             try
             {

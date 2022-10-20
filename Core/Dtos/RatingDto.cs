@@ -14,6 +14,7 @@ public class RatingDto
     [Required]
     [Range(1, 5)]
     public int VisualPresentationRating { get; set; }
+    public string? ImagePath { get; set; }
     public DateTime RatedAt { get; set; }
     public UserDto RatedByUser { get; set; } = null!;
 }

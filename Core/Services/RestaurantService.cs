@@ -12,12 +12,17 @@ namespace Core.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly BurgerBackendDbContext _context;
-        public RestaurantService(BurgerBackendDbContext context, IHttpContextAccessor httpContextAccessor)
+        private readonly IFileService _fileService;
+        public RestaurantService(
+            BurgerBackendDbContext context, 
+            IHttpContextAccessor httpContextAccessor,
+            IFileService fileService)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _fileService = fileService;
         }
-        public async Task<List<RestaurantDto>> GetNearbyRestaurants(double meters, double? latitude, double? longitude)
+        public async Task<List<RestaurantDto>> GetNearbyRestaurants(double distanceMeters, double? latitude, double? longitude)
         {
             var location = new Point(12.58254, 55.68024) { SRID = 4326};
             if (latitude.HasValue && longitude.HasValue)
@@ -25,7 +30,7 @@ namespace Core.Services
 
             var restaurants = await _context.Restaurants
                 .OrderBy(x => x.Location.Distance(location))
-                .Where(x => x.Location.IsWithinDistance(location, meters))
+                .Where(x => x.Location.IsWithinDistance(location, distanceMeters))
                 .Select(x => new RestaurantDto
                 {
                     Id = x.Id,
@@ -80,6 +85,7 @@ namespace Core.Services
                         TextureRating = y.TextureRating,
                         VisualPresentationRating = y.VisualPresentationRating,
                         RatedAt = y.RatedAt,
+                        ImagePath = y.ImagePath,
                         RatedByUser = new UserDto()
                         {
                             Id = y.RatedByUser.Id,
@@ -96,7 +102,7 @@ namespace Core.Services
             
         }
 
-        public async Task RateRestaurant(CreateRatingDto rating)
+        public async Task RateRestaurant(CreateRatingDto ratingDto)
         {
             var currentUserId = _httpContextAccessor.HttpContext.User.Claims?.FirstOrDefault(x => x.Type.Equals("UserId", StringComparison.OrdinalIgnoreCase))?.Value;
             if (string.IsNullOrEmpty(currentUserId))
@@ -106,20 +112,20 @@ namespace Core.Services
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == uid);
             if (user == null)
                 throw new Exception("User not found in datastore");
-            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(x => x.Id == rating.RestaurantId);
+            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(x => x.Id == ratingDto.RestaurantId);
             if (restaurant == null)
                 throw new Exception("Restaurant not found in datastore");
 
             var newRating = new Rating
             {
                 Id = Guid.NewGuid(),
-                TasteRating = rating.TasteRating,
-                TextureRating = rating.TextureRating,
-                VisualPresentationRating = rating.VisualPresentationRating,
+                TasteRating = ratingDto.TasteRating,
+                TextureRating = ratingDto.TextureRating,
+                VisualPresentationRating = ratingDto.VisualPresentationRating,
                 RatedAt = DateTime.Now,
                 RatedByUser = user,
                 Restaurant = restaurant,
-                ImagePath = rating.ImagePath
+                ImagePath = await _fileService.Upload(ratingDto.ImageFile)
             };
 
             _context.Ratings.Add(newRating);
@@ -127,18 +133,18 @@ namespace Core.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task CreateRestaurant(CreateRestaurantDto restaurant)
+        public async Task CreateRestaurant(CreateRestaurantDto restaurantDto)
         {
             var newRestaurant = new Restaurant
             {
                 Id = Guid.NewGuid(),
-                Name = restaurant.Name,
-                Description = restaurant.Description,
-                Street = restaurant.Street,
-                City = restaurant.City,
-                ZipCode = restaurant.ZipCode,
-                OpeningHours = restaurant.OpeningHours,
-                Location = new Point(restaurant.Longitude, restaurant.Latitude) { SRID = 4326 }
+                Name = restaurantDto.Name,
+                Description = restaurantDto.Description,
+                Street = restaurantDto.Street,
+                City = restaurantDto.City,
+                ZipCode = restaurantDto.ZipCode,
+                OpeningHours = restaurantDto.OpeningHours,
+                Location = new Point(restaurantDto.Longitude, restaurantDto.Latitude) { SRID = 4326 }
             };
 
             _context.Restaurants.Add(newRestaurant);

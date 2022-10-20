@@ -14,7 +14,7 @@ public class CreateRatingDto
     [Required]
     [Range(1, 5)]
     public int VisualPresentationRating { get; set; }
-    public string? ImagePath { get; set; }
+    public IFormFile? ImageFile { get; set; }
     [Required]
     public Guid RestaurantId { get; set; }
 }

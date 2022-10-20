@@ -2,10 +2,12 @@ using Core.Services;
 using Core.Services.Interfaces;
 using Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,12 +79,15 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    //var dbInit = scope.ServiceProvider.GetService<IDbInitializer>();
-    //dbInit?.Seed();
     var dbContext = scope.ServiceProvider.GetService<BurgerBackendDbContext>();
     if(dbContext != null)
         DataSeeder.Seed(dbContext);
@@ -90,6 +95,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI(c =>
