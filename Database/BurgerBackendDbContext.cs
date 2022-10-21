@@ -7,9 +7,7 @@ namespace Database
 {
     public class BurgerBackendDbContext : DbContext
     {
-        public BurgerBackendDbContext(DbContextOptions<BurgerBackendDbContext> options) : base(options)
-        {
-        }
+        public BurgerBackendDbContext(DbContextOptions<BurgerBackendDbContext> options) : base(options) { }
 
         public DbSet<Restaurant> Restaurants { get; set; } = null!;
         public DbSet<Rating> Ratings { get; set; } = null!;
@@ -23,6 +21,7 @@ namespace Database
                 .HasForeignKey(x => x.RestaurantId);
 
             modelBuilder.Entity<Rating>();
+
             modelBuilder.Entity<User>()
                 .HasMany(x => x.MyRatings)
                 .WithOne(x => x.RatedByUser)
