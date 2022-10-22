@@ -17,7 +17,6 @@ Make sure you have SQL Express 2019 installed or change the connectionstring in 
 4. Run and debug API
 
 ## Endpoints
-Authenticate
 
 | Api name     | Endpoint                      | HttpMethod | Description                                         | Requirements               |
 |--------------|-------------------------------|------------|-----------------------------------------------------|----------------------------|
@@ -63,7 +62,7 @@ Authenticate
 ## Notes
 If you do not provide a location (latitude/longitude) a default loaction in Copenhagen is chosen.
 
-The data seeding adds 13 restaurants in Copenhagen, 1 in Hillerød and 2 in Billund
+The data seeding adds 13 restaurants in Copenhagen, 1 in HillerÃ¸d and 2 in Billund
 
 
 
